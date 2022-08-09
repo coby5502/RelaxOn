@@ -20,7 +20,7 @@ struct VolumeControlView: View {
     
     var body: some View {
         ZStack {
-            ColorPalette.tabBackground.color.ignoresSafeArea()
+            Color.black.ignoresSafeArea()
             VStack {
                 HStack {
                     Button {
@@ -95,9 +95,15 @@ struct VolumeControlView: View {
                     )
                 }
                 
-                
-                
-                .padding()
+                HStack {
+                    Text("MATERIAL VOLUME")
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                        .font(.system(size: 17, weight: .semibold))
+                    
+                    Spacer()
+                }
+                .padding(20)
                 
                 if let baseSound = data.baseSound {
                     SoundControlSlider(item: baseSound)
@@ -124,6 +130,10 @@ struct VolumeControlView: View {
                 .resizable()
                 .frame(width: 60, height: 60)
                 .cornerRadius(4)
+                .overlay(
+                        RoundedRectangle(cornerRadius: 4)
+                            .stroke(Color.systemGrey1, lineWidth: 0.5)
+                    )
                 .padding(.trailing, 18)
             
             VStack {
