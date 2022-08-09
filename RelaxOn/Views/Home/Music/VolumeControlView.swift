@@ -139,16 +139,23 @@ struct VolumeControlView: View {
                     .cornerRadius(12)
                 switch item.soundType {
                 case .base:
-                    Slider(value: $audioVolumes.baseVolume, in: 0...1)
-                        .background(.black)
-                        .cornerRadius(4)
-                        .accentColor(.white)
-                        .padding(.horizontal, 20)
-                        .onChange(of: audioVolumes.baseVolume) { newValue in
-                            print(newValue)
-                            baseAudioManager.changeVolume(track: item.name,
-                                                           volume: newValue)
+                    
+                    CustomSlider(value: $audioVolumes.baseVolume, range: (0, 1), knobWidth: 14) { modifiers in
+                        ZStack {
+                            Color.white.cornerRadius(3).frame(height: 2).modifier(modifiers.barLeft)
+                            Color.white.opacity(0.4).cornerRadius(3).frame(height: 2).modifier(modifiers.barRight)
+                            ZStack {
+                                Circle().fill(Color.white)
+                            }.modifier(modifiers.knob)
                         }
+                    }
+                    .frame(height: 25)
+                    .onChange(of: audioVolumes.baseVolume) { newValue in
+                        print(newValue)
+                        baseAudioManager.changeVolume(track: item.name,
+                                                       volume: newValue)
+                    }
+
                 case .melody:
                     Slider(value: $audioVolumes.melodyVolume, in: 0...1)
                         .background(.black)
