@@ -120,69 +120,101 @@ struct VolumeControlView: View {
     @ViewBuilder
     func SoundControlSlider(item: Sound) -> some View {
         HStack {
+            Image(item.imageName)
+                .resizable()
+                .frame(width: 60, height: 60)
+                .cornerRadius(4)
+                .padding(.trailing, 18)
+            
             VStack {
-                Image(item.imageName)
-                    .resizable()
-                    .frame(width: 80, height: 80)
-                    .cornerRadius(24)
-                Text(item.name)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-            }
-            .frame(width: 120)
-            ZStack {
-                Rectangle()
-                    .background(.black)
-                    .frame(height: 40)
-                    .cornerRadius(12)
-                switch item.soundType {
-                case .base:
+                HStack {
+                    Text(item.soundType.rawValue.uppercased())
+                        .foregroundColor(.systemGrey1)
+                        .font(.system(size: 12, weight: .semibold))
                     
-                    CustomSlider(value: $audioVolumes.baseVolume, range: (0, 1), knobWidth: 14) { modifiers in
-                        ZStack {
-                            Color.white.cornerRadius(3).frame(height: 2).modifier(modifiers.barLeft)
-                            Color.white.opacity(0.4).cornerRadius(3).frame(height: 2).modifier(modifiers.barRight)
+                    Text(item.name)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                        .font(.system(size: 17, weight: .semibold))
+                        .baselineOffset(5)
+                    
+                    Spacer()
+                }
+                
+                HStack {
+                    Image(systemName: "speaker.wave.1.fill")
+                        .frame(width: 18.0, height: 18.0)
+                        .foregroundColor(.white)
+                    
+                    switch item.soundType {
+                    case .base:
+                        CustomSlider(value: $audioVolumes.baseVolume, range: (0, 1), knobWidth: 14) { modifiers in
                             ZStack {
-                                Circle().fill(Color.white)
-                            }.modifier(modifiers.knob)
+                                Color.white.cornerRadius(3).frame(height: 2).modifier(modifiers.barLeft)
+                                Color.white.opacity(0.4).cornerRadius(3).frame(height: 2).modifier(modifiers.barRight)
+                                ZStack {
+                                    Circle().fill(Color.white)
+                                }.modifier(modifiers.knob)
+                            }
                         }
-                    }
-                    .frame(height: 25)
-                    .onChange(of: audioVolumes.baseVolume) { newValue in
-                        print(newValue)
-                        baseAudioManager.changeVolume(track: item.name,
-                                                       volume: newValue)
-                    }
-
-                case .melody:
-                    Slider(value: $audioVolumes.melodyVolume, in: 0...1)
-                        .background(.black)
-                        .cornerRadius(4)
-                        .accentColor(.white)
-                        .padding(.horizontal, 20)
+                        .frame(height: 25)
+                        .onChange(of: audioVolumes.baseVolume) { newValue in
+                            print(newValue)
+                            baseAudioManager.changeVolume(track: item.name,
+                                                           volume: newValue)
+                        }
+                        Text("\(Int(audioVolumes.baseVolume * 100))")
+                            .font(.body)
+                            .foregroundColor(.systemGrey1)
+                            .frame(maxWidth: 30)
+                        
+                    case .melody:
+                        CustomSlider(value: $audioVolumes.melodyVolume, range: (0, 1), knobWidth: 14) { modifiers in
+                            ZStack {
+                                Color.white.cornerRadius(3).frame(height: 2).modifier(modifiers.barLeft)
+                                Color.white.opacity(0.4).cornerRadius(3).frame(height: 2).modifier(modifiers.barRight)
+                                ZStack {
+                                    Circle().fill(Color.white)
+                                }.modifier(modifiers.knob)
+                            }
+                        }
+                        .frame(height: 25)
                         .onChange(of: audioVolumes.melodyVolume) { newValue in
                             print(newValue)
                             melodyAudioManager.changeVolume(track: item.name,
-                                                             volume: newValue)
+                                                           volume: newValue)
                         }
-                case .natural:
-                    Slider(value: $audioVolumes.naturalVolume, in: 0...1)
-                        .background(.black)
-                        .cornerRadius(4)
-                        .accentColor(.white)
-                        .padding(.horizontal, 20)
+                        Text("\(Int(audioVolumes.melodyVolume * 100))")
+                            .font(.body)
+                            .foregroundColor(.systemGrey1)
+                            .frame(maxWidth: 30)
+                    
+                    case .natural:
+                        CustomSlider(value: $audioVolumes.naturalVolume, range: (0, 1), knobWidth: 14) { modifiers in
+                            ZStack {
+                                Color.white.cornerRadius(3).frame(height: 2).modifier(modifiers.barLeft)
+                                Color.white.opacity(0.4).cornerRadius(3).frame(height: 2).modifier(modifiers.barRight)
+                                ZStack {
+                                    Circle().fill(Color.white)
+                                }.modifier(modifiers.knob)
+                            }
+                        }
+                        .frame(height: 25)
                         .onChange(of: audioVolumes.naturalVolume) { newValue in
                             print(newValue)
                             naturalAudioManager.changeVolume(track: item.name,
-                                                              volume: newValue)
+                                                           volume: newValue)
                         }
+                        Text("\(Int(audioVolumes.naturalVolume * 100))")
+                            .font(.body)
+                            .foregroundColor(.systemGrey1)
+                            .frame(maxWidth: 30)
+                    }
                 }
-                
             }
         }
-        .padding()
+        .padding(.horizontal, 20)
+        .padding(.vertical, 10)
     }
     
     private func getEncodedData(data: [MixedSound]) -> Data? {
